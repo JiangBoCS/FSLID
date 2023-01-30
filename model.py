@@ -189,10 +189,17 @@ class DN(nn.Module):
         
         self.few_shot = few_shot
         self.Encoder = Encoder(in_channels, dim)
+        
+        if self.few_shot:
+            for p in self.parameters():
+                p.requires_grad = False
+        
         self.Decoder = Decoder(dim, out_channels)
         self.Noiser = Noiser(dim)
         
-    def forward(self, x, few_shot=False):
+    def forward(self, x):
+    
+        few_shot=self.few_shot
     
         fea = self.Encoder(x)
         
@@ -218,14 +225,6 @@ if __name__ == "__main__":
     from matplotlib import pyplot as plt
     import numpy as np
     import timm
-
-#        a = torch.randn(1,32,64,64)
-#        b = torch.randn(1,32,64,64)
-#        c = torch.randn(1,32,64,64)
-#        d = torch.randn(1,32,64,64)
-#        e = torch.randn(1,32,64,64)
-#        
-#        F = [a,b,c,d,e]
 
     y = torch.randn(1,3,256,256)
     M = DN(in_channels=3, dim=64, out_channels=3)
